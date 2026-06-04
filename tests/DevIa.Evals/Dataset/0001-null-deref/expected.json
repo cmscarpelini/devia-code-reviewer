@@ -1,0 +1,19 @@
+{
+  "defects": [
+    {
+      "file": "src/UserService.cs",
+      "line": 11,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Possible null dereference: FindById can return null and user.Name is accessed without a guard."
+    },
+    {
+      "file": "src/UserService.cs",
+      "line": 17,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Possible null dereference: user.Email accessed without a null check (FindById can return null)."
+    }
+  ],
+  "shouldHaveFindings": true
+}

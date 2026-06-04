@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DevIa.Api/DevIa.Api.csproj" />
+    <Project Path="src/DevIa.Application/DevIa.Application.csproj" />
+    <Project Path="src/DevIa.Domain/DevIa.Domain.csproj" />
+    <Project Path="src/DevIa.Infrastructure/DevIa.Infrastructure.csproj" />
+    <Project Path="src/DevIa.Worker/DevIa.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DevIa.Evals/DevIa.Evals.csproj" />
+    <Project Path="tests/DevIa.IntegrationTests/DevIa.IntegrationTests.csproj" />
+    <Project Path="tests/DevIa.UnitTests/DevIa.UnitTests.csproj" />
+  </Folder>
+</Solution>

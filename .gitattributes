@@ -1,0 +1,18 @@
+# Normalize line endings: Git stores LF, checks out native. Avoids noisy CRLF diffs on Windows.
+* text=auto
+
+# Force CRLF for Windows-specific scripts
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+*.ps1  text eol=crlf
+
+# Force LF for shell scripts and cross-platform configs
+*.sh   text eol=lf
+
+# Treat common binaries as binary (never diffed/normalized)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary

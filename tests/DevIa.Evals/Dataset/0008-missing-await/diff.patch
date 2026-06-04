@@ -1,0 +1,15 @@
+diff --git a/src/Notifier.cs b/src/Notifier.cs
+index 5656565..7878787 100644
+--- a/src/Notifier.cs
++++ b/src/Notifier.cs
+@@ -6,3 +6,9 @@ public class Notifier
+     public Notifier(IEmailService email, ILogger log)
+         => (_emailService, _log) = (email, log);
+
++    public async Task SendWelcomeAsync(User user)
++    {
++        _emailService.SendAsync(user.Email, "Welcome");
++        _log.Info("Welcome email sent");
++    }
++
+ }

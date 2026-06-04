@@ -1,0 +1,24 @@
+diff --git a/src/OrderCalculator.cs b/src/OrderCalculator.cs
+index aaaaaaa..bbbbbbb 100644
+--- a/src/OrderCalculator.cs
++++ b/src/OrderCalculator.cs
+@@ -3,11 +3,17 @@ public class OrderCalculator
+ {
+     public decimal CalculateTotal(Order order)
+     {
+-        decimal t = 0;
+-        foreach (var i in order.Items)
+-            t += i.Price * i.Qty;
+-        return t - order.Discount;
++        var subtotal = SumLineItems(order);
++        return subtotal - order.Discount;
++    }
++
++    private static decimal SumLineItems(Order order)
++    {
++        decimal subtotal = 0;
++        foreach (var item in order.Items)
++            subtotal += item.Price * item.Qty;
++        return subtotal;
+     }
+ }

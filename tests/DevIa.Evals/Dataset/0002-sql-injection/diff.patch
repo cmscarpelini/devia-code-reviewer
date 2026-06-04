@@ -1,0 +1,16 @@
+diff --git a/src/ItemSearch.cs b/src/ItemSearch.cs
+index 3333333..4444444 100644
+--- a/src/ItemSearch.cs
++++ b/src/ItemSearch.cs
+@@ -4,6 +4,11 @@ public class ItemSearch
+     public ItemSearch(IDbConnection db) => _db = db;
+
++    public IEnumerable<Item> Find(string term)
++    {
++        var sql = "SELECT * FROM items WHERE name = '" + term + "'";
++        return _db.Query<Item>(sql);
++    }
++
+     public Item GetById(int id) => _db.QuerySingle<Item>(
+         "SELECT * FROM items WHERE id = @id", new { id });
+ }

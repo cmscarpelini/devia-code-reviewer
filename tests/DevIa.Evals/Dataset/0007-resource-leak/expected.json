@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "src/ItemRepository.cs",
+      "line": 8,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Resource leak: the SqlConnection is opened but never disposed (no 'using'); under load this exhausts the connection pool."
+    }
+  ],
+  "shouldHaveFindings": true
+}

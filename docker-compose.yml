@@ -1,0 +1,47 @@
+# Local development infrastructure for DevIA Code Reviewer.
+# Credentials are for local dev only.
+services:
+  postgres:
+    image: postgres:17
+    container_name: devia-postgres
+    environment:
+      POSTGRES_DB: devia
+      POSTGRES_USER: devia
+      POSTGRES_PASSWORD: devia
+    ports:
+      - "5432:5432"
+    volumes:
+      - devia-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devia -d devia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    container_name: devia-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: devia
+      MONGO_INITDB_ROOT_PASSWORD: devia
+    ports:
+      - "27017:27017"
+    volumes:
+      - devia-mongo-data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: devia-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: devia
+      RABBITMQ_DEFAULT_PASS: devia
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # management UI
+    volumes:
+      - devia-rabbitmq-data:/var/lib/rabbitmq
+
+volumes:
+  devia-postgres-data:
+  devia-mongo-data:
+  devia-rabbitmq-data:

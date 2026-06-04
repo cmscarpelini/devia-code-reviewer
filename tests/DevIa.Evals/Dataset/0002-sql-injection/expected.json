@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "src/ItemSearch.cs",
+      "line": 9,
+      "category": "Security",
+      "severity": "Blocker",
+      "description": "SQL injection: the query is built by concatenating the untrusted 'term' into the SQL string. Use a parameterized query."
+    }
+  ],
+  "shouldHaveFindings": true
+}

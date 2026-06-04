@@ -1,0 +1,5 @@
+{
+  "language": "csharp",
+  "size": "small",
+  "tags": ["security", "hardcoded-secret", "injected-defect"]
+}

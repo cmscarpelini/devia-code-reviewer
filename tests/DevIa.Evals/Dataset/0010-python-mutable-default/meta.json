@@ -1,0 +1,5 @@
+{
+  "language": "python",
+  "size": "small",
+  "tags": ["bug", "mutable-default-arg", "subtle", "injected-defect"]
+}

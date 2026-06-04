@@ -1,0 +1,17 @@
+diff --git a/src/RingBuffer.cs b/src/RingBuffer.cs
+index eeeeeee..fffffff 100644
+--- a/src/RingBuffer.cs
++++ b/src/RingBuffer.cs
+@@ -5,3 +5,11 @@ public class RingBuffer
+     private readonly int[] _data;
+
+     public RingBuffer(int capacity) => _data = new int[capacity];
++
++    public int Sum(int[] data)
++    {
++        var total = 0;
++        for (var i = 0; i <= data.Length; i++)
++            total += data[i];
++        return total;
++    }
+ }

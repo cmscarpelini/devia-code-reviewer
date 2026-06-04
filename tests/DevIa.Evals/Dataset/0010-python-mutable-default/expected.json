@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "app/cart.py",
+      "line": 5,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Mutable default argument: 'basket=[]' is shared across all calls, so items accumulate between invocations. Use 'basket=None' and create the list inside."
+    }
+  ],
+  "shouldHaveFindings": true
+}

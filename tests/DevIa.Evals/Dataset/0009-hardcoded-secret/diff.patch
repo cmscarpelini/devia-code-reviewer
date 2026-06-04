@@ -1,0 +1,16 @@
+diff --git a/src/PaymentClient.cs b/src/PaymentClient.cs
+index 9090909..1a1a1a1 100644
+--- a/src/PaymentClient.cs
++++ b/src/PaymentClient.cs
+@@ -2,4 +2,10 @@ public class PaymentClient
+ {
+     private readonly HttpClient _http;
+
++    private const string ApiKey = "EXAMPLE_FAKE_KEY_9c8b7a6d5e4f3a2b1c0d9e8f";
++
++    public PaymentClient(HttpClient http)
++    {
++        _http = http;
++        _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {ApiKey}");
++    }
+ }

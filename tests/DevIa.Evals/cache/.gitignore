@@ -1,0 +1,3 @@
+# Cached LLM results are run artifacts; keep the folder, ignore its contents.
+*
+!.gitignore

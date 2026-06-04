@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "src/sync.js",
+      "line": 5,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Array.forEach does not await the async callback, so saveAll resolves (and logs 'all items saved') before the saves complete, and rejections are unhandled. Use a for...of loop with await or Promise.all(map)."
+    }
+  ],
+  "shouldHaveFindings": true
+}

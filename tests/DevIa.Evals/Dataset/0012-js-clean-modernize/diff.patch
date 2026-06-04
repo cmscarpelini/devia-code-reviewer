@@ -1,0 +1,16 @@
+diff --git a/src/math.js b/src/math.js
+index 2c2c2c2..3d3d3d3 100644
+--- a/src/math.js
++++ b/src/math.js
+@@ -1,9 +1,5 @@
+-var add = function (a, b) {
+-  return a + b;
+-};
+-var double = function (a) {
+-  return add(a, a);
+-};
+-module.exports = { add: add, double: double };
++const add = (a, b) => a + b;
++const double = (a) => add(a, a);
++
++module.exports = { add, double };

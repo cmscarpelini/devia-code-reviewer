@@ -1,0 +1,46 @@
+# ---- .NET ----
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+artifacts/
+*.user
+*.suo
+*.userprefs
+project.lock.json
+.packages/
+
+# Test results / coverage
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+coverage/
+*.cobertura.xml
+
+# ---- IDEs / editors ----
+.vs/
+.idea/
+*.swp
+*~
+
+# ---- Node / Next.js (web/) ----
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---- Secrets & local config (defense in depth; real secrets live in user-secrets) ----
+*.env
+.env.local
+.env.*.local
+secrets.json
+appsettings.*.Local.json
+
+# ---- OS ----
+.DS_Store
+Thumbs.db

@@ -1,0 +1,23 @@
+diff --git a/src/Greeter.cs b/src/Greeter.cs
+index ccccccc..ddddddd 100644
+--- a/src/Greeter.cs
++++ b/src/Greeter.cs
+@@ -1,9 +1,11 @@
+ public class Greeter
+ {
+-    public string Hello(string name){
+-        return $"Hello, {name}!";
+-    }
+-    public string Bye(string name){
+-        return $"Goodbye, {name}.";
+-    }
++    public string Hello(string name)
++    {
++        return $"Hello, {name}!";
++    }
++
++    public string Bye(string name)
++    {
++        return $"Goodbye, {name}.";
++    }
+ }

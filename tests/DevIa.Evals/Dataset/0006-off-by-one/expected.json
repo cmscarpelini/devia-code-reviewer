@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "src/RingBuffer.cs",
+      "line": 12,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Off-by-one: the loop condition 'i <= data.Length' reads data[data.Length], throwing IndexOutOfRangeException. Use '<'."
+    }
+  ],
+  "shouldHaveFindings": true
+}

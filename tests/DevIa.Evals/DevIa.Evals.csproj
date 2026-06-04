@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- Evals call a real LLM and run on demand (AI-affecting changes), not in the per-PR test run. -->
+    <IsTestProject>false</IsTestProject>
+    <UserSecretsId>devia-evals</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DevIa.Domain\DevIa.Domain.csproj" />
+    <ProjectReference Include="..\..\src\DevIa.Application\DevIa.Application.csproj" />
+    <ProjectReference Include="..\..\src\DevIa.Infrastructure\DevIa.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <!-- The golden dataset travels with the runner so it can be located at runtime. -->
+  <ItemGroup>
+    <None Include="dataset\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

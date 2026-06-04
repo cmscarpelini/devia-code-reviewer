@@ -1,0 +1,3 @@
+# Generated eval reports are run artifacts; keep the folder, ignore its contents.
+*
+!.gitignore

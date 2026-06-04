@@ -1,0 +1,14 @@
+diff --git a/src/sync.js b/src/sync.js
+index 0f0f0f0..1e1e1e1 100644
+--- a/src/sync.js
++++ b/src/sync.js
+@@ -3,6 +3,12 @@ const db = require("./db");
+
++async function saveAll(items) {
++  items.forEach(async (item) => {
++    await db.save(item);
++  });
++  console.log("all items saved");
++}
++
+ module.exports = { saveAll };

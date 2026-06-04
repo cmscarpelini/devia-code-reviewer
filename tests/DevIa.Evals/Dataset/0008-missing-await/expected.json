@@ -1,0 +1,12 @@
+{
+  "defects": [
+    {
+      "file": "src/Notifier.cs",
+      "line": 11,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Missing await: SendAsync runs unobserved (fire-and-forget). Exceptions are swallowed and the log line can run before the email is sent. Await the call."
+    }
+  ],
+  "shouldHaveFindings": true
+}

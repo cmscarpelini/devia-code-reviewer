@@ -1,0 +1,16 @@
+diff --git a/src/ItemRepository.cs b/src/ItemRepository.cs
+index 1212121..3434343 100644
+--- a/src/ItemRepository.cs
++++ b/src/ItemRepository.cs
+@@ -4,2 +4,10 @@ public class ItemRepository
+     private readonly string _connectionString;
+
++    public int CountItems()
++    {
++        var connection = new SqlConnection(_connectionString);
++        connection.Open();
++        return connection.QuerySingle<int>("SELECT COUNT(*) FROM items");
++    }
++
+     public ItemRepository(string connectionString) => _connectionString = connectionString;
+ }

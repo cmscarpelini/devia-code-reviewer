@@ -1,0 +1,5 @@
+{
+  "language": "csharp",
+  "size": "small",
+  "tags": ["bug", "resource-leak", "idisposable", "injected-defect"]
+}

@@ -1,0 +1,18 @@
+diff --git a/src/UserService.cs b/src/UserService.cs
+index 1111111..2222222 100644
+--- a/src/UserService.cs
++++ b/src/UserService.cs
+@@ -8,6 +8,12 @@ public class UserService
+     public string GetName(Guid id)
+     {
+         var user = _repository.FindById(id);
+-        return user?.Name ?? "unknown";
++        return user.Name.ToUpperInvariant();
++    }
++
++    public string GetDisplayEmail(Guid id)
++    {
++        var user = _repository.FindById(id);
++        return user.Email.ToUpperInvariant();
+     }
+ }

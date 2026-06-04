@@ -1,0 +1,15 @@
+diff --git a/app/cart.py b/app/cart.py
+index a1b2c3d..d4e5f6a 100644
+--- a/app/cart.py
++++ b/app/cart.py
+@@ -1,6 +1,11 @@
+ class Cart:
+     def __init__(self):
+         self.items = []
+
++    def add(self, name, basket=[]):
++        basket.append(name)
++        return basket
++
+     def total(self):
+         return sum(i.price for i in self.items)

@@ -1,0 +1,12 @@
+diff --git a/README.md b/README.md
+index 5555555..6666666 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+-# My App
++# My Application
+
+ A small service that greets users.
+
+-Run with `dotnet run`.
++Run it locally with `dotnet run`. See CONTRIBUTING.md for details.
