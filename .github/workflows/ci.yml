@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend — build + unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore DevIa.slnx
+
+      - name: Build
+        run: dotnet build DevIa.slnx --configuration Release --no-restore
+
+      # Only the deterministic unit tests run in CI. Integration tests need Docker
+      # (Testcontainers spin up Postgres/RabbitMQ/Mongo) and run locally; the evals
+      # call a real LLM and run on demand, never in CI.
+      - name: Unit tests
+        run: dotnet test tests/DevIa.UnitTests --configuration Release --no-build --verbosity normal
+
+  web:
+    name: Web — build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build

@@ -1,5 +1,10 @@
 # DevIA Code Reviewer
 
+[![CI](https://github.com/cmscarpelini/devia-code-reviewer/actions/workflows/ci.yml/badge.svg)](https://github.com/cmscarpelini/devia-code-reviewer/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4)
+![Next.js](https://img.shields.io/badge/Next.js-15-000000)
+
 > AI-assisted code review for GitHub Pull Requests, with a **human in the loop**. The AI reads a
 > PR's diff and produces an executive summary plus a severity-ranked list of findings; a Senior
 > Developer makes the final call (approve / reject), and that decision is reflected back on GitHub.
@@ -31,6 +36,20 @@ A compact but production-shaped system that tackles the hard parts of building o
   multi-run variance, rate-limit resilience, and a result cache. See [`tests/DevIa.Evals`](tests/DevIa.Evals/README.md).
 - **Tested**: ~85 unit tests + integration tests (Testcontainers spin up real Postgres / RabbitMQ /
   Mongo), the deterministic half of a two-part testing strategy.
+
+## Dashboard
+
+The reviewer-facing dashboard (Next.js + React + TypeScript) is where the human closes the loop:
+
+- **Login** — sign in with GitHub (OAuth → JWT).
+- **Review queue** — the PRs awaiting a human verdict, with repository, status, and risk.
+- **Review detail** — the AI's executive summary and severity-ranked findings, with **Approve** /
+  **Reject** actions; the verdict is reflected back on the PR (Check Run + comment).
+
+<!-- Screenshot: run the stack (`docker compose up -d`, the API + Worker, then
+     `npm run dev --prefix web`), capture the review-detail page, save it as
+     docs/images/dashboard.png, and uncomment the next line. -->
+<!-- ![DevIA dashboard](docs/images/dashboard.png) -->
 
 ## Architecture (layers)
 
