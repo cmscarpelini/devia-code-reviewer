@@ -46,10 +46,7 @@ The reviewer-facing dashboard (Next.js + React + TypeScript) is where the human 
 - **Review detail** — the AI's executive summary and severity-ranked findings, with **Approve** /
   **Reject** actions; the verdict is reflected back on the PR (Check Run + comment).
 
-<!-- Screenshot: run the stack (`docker compose up -d`, the API + Worker, then
-     `npm run dev --prefix web`), capture the review-detail page, save it as
-     docs/images/dashboard.png, and uncomment the next line. -->
-<!-- ![DevIA dashboard](docs/images/dashboard.png) -->
+![DevIA dashboard — the review detail: the AI's summary, severity-ranked findings, and the human verdict](docs/images/dashboard.png)
 
 ## Architecture (layers)
 

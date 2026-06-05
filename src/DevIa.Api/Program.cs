@@ -50,8 +50,16 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CanReview", policy =>
         policy.RequireRole(nameof(MembershipRole.Reviewer), nameof(MembershipRole.Admin))));
 
+// The dashboard runs on a separate origin (e.g. http://localhost:3000), so the browser needs CORS.
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:3000"];
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod()));
+
 var app = builder.Build();
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
