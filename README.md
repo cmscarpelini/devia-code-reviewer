@@ -120,6 +120,26 @@ npm install --prefix web && npm run dev --prefix web   # dashboard on http://loc
 > .NET user-secrets locally (and a secret store in production). `appsettings.json` only carries
 > local-dev placeholders.
 
+### 5. Connect a GitHub App (for the live GitHub flow)
+
+To review **real** PRs end to end, register a GitHub App and point it at a running instance:
+
+1. **Register the App** (Settings → Developer settings → GitHub Apps). Permissions: *Pull requests* R/W,
+   *Checks* R/W, *Contents* read, *Email addresses* read. Subscribe to the **Pull request** event.
+   - **Callback URL**: `http://localhost:5080/auth/github/callback` (OAuth login)
+   - **Webhook URL**: a public URL to the API's `/webhooks/github` — for local dev, expose port 5080 with
+     a tunnel, e.g. `cloudflared tunnel --url http://localhost:5080`
+2. Generate a **client secret** and a **private key** (`.pem`).
+3. Store the credentials in user-secrets (never committed):
+   - **API**: `Auth:GitHubClientId`, `Auth:GitHubClientSecret`, `Auth:FrontendLoginUrl`,
+     `Auth:ReviewerLogins:0`, `GitHub:AppId`, `GitHub:PrivateKey`, `GitHub:WebhookSecret`
+   - **Worker**: `GitHub:AppId`, `GitHub:PrivateKey`, `Llm:ApiKey`
+4. **Install** the App on a repository, then open a PR — the review shows up in the dashboard, and your
+   verdict is reflected on the PR as a Check Run + comment.
+
+> Each self-hosted instance registers its **own** GitHub App (the credentials identify *your* instance and
+> point webhooks at *your* server). This is the standard model for GitHub integrations.
+
 ## Testing & evaluation strategy
 
 The product's core output is **non-deterministic** (LLM-generated), so testing has two halves:
@@ -149,10 +169,11 @@ and the evaluation strategy ([ADR-0005](docs/architecture/adr/0005-evaluation-st
 
 ## Status
 
-**Phase 1 — MVP, functionally complete.** The end-to-end flow works against mocked boundaries:
-webhook → queue → worker → AI pipeline → Postgres/Mongo → human verdict → GitHub reflection. GitHub
-App authentication, the MongoDB result store, and the eval harness are implemented. What remains for
-a live deployment is wiring real credentials (registering a GitHub App, production LLM keys).
+**Phase 1 — MVP, complete and validated end-to-end against real GitHub.** A real PR triggers the full
+flow in production conditions: webhook → queue → worker → AI pipeline (real LLM) → Postgres/Mongo →
+the reviewer's verdict on the dashboard → reflected on the PR as a **Check Run + comment**, posted by
+the installed GitHub App. GitHub App authentication (installation tokens), real GitHub OAuth login, the
+MongoDB result store, and the eval harness are all implemented and exercised live. Next: frontend/UX polish.
 
 ## License
 
