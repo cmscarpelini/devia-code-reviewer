@@ -1,0 +1,19 @@
+{
+  "defects": [
+    {
+      "file": "src/ContentGen.Api/Program.cs",
+      "line": null,
+      "category": "Bug",
+      "severity": "Major",
+      "description": "Unbounded index access: 'block.PostSuggestions[index]' uses the route 'index' with no bounds check, throwing IndexOutOfRangeException (HTTP 500) for any out-of-range value. Validate index against the collection size and return 404."
+    },
+    {
+      "file": "src/ContentGen.Api/Program.cs",
+      "line": null,
+      "category": "Bug",
+      "severity": "Minor",
+      "description": "Missing input validation: 'language == \"pt-BR\" ? pkg.PtBR : pkg.EnUS' silently falls back to EnUS for any value other than 'pt-BR' (including invalid ones), masking bad input instead of returning 400/404."
+    }
+  ],
+  "shouldHaveFindings": true
+}
