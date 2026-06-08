@@ -105,9 +105,14 @@ export const api = {
   listReviews: (status: ReviewStatus = "AwaitingHumanReview") =>
     request<ReviewListItem[]>(`/reviews?status=${status}`),
   getReview: (id: string) => request<ReviewDetail>(`/reviews/${id}`),
-  recordVerdict: (id: string, decision: "Approved" | "Rejected", justification: string | null) =>
+  recordVerdict: (
+    id: string,
+    decision: "Approved" | "Rejected",
+    justification: string | null,
+    useAiAnalysisWhenNoJustification = false,
+  ) =>
     request<{ verdictId: string; decision: string }>(`/reviews/${id}/verdict`, {
       method: "POST",
-      body: JSON.stringify({ decision, justification }),
+      body: JSON.stringify({ decision, justification, useAiAnalysisWhenNoJustification }),
     }),
 };

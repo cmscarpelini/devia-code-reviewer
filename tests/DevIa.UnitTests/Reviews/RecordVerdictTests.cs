@@ -39,13 +39,13 @@ public class RecordVerdictTests
         public readonly FakeUnitOfWork Uow = new();
         public Review Review = default!;
 
-        public Harness SeedAwaiting()
+        public Harness SeedAwaiting(IEnumerable<Finding>? findings = null)
         {
             var repository = new CodeRepository(Guid.NewGuid(), 200, "acme/app", "main");
             var pullRequest = new PullRequest(repository.Id, 7, Guid.NewGuid(), "title", "main", "https://x/pull/7", "open");
             Review = new Review(pullRequest.Id, "sha1");
             Review.StartProcessing();
-            Review.CompleteAssessment("summary", 10, "OpenAI", "gpt-4o-mini", 10, "raw-ref", []);
+            Review.CompleteAssessment("summary", 10, "OpenAI", "gpt-4o-mini", 10, "raw-ref", findings ?? []);
 
             Repos.Add(repository);
             Prs.Add(pullRequest);
@@ -95,6 +95,47 @@ public class RecordVerdictTests
 
         Assert.Equal(ReviewStatus.AwaitingHumanReview, ctx.Review.Status);
         Assert.Empty(ctx.Audits.Items);
+        Assert.Empty(ctx.Notifier.Published);
+    }
+
+    [Fact]
+    public async Task Reject_without_justification_but_with_ai_consent_uses_ai_analysis_as_justification()
+    {
+        var finding = new Finding(
+            Severity.Major, FindingCategory.Security, "src/auth.cs", 42,
+            "Hardcoded secret", "A credential is committed in source.", "Move it to a secret store.");
+        var ctx = new Harness().SeedAwaiting([finding]);
+
+        var result = await ctx.Handler().HandleAsync(
+            ctx.Review.Id, Guid.NewGuid(), VerdictDecision.Rejected, null,
+            useAiAnalysisWhenNoJustification: true);
+
+        Assert.Equal(RecordVerdictStatus.Recorded, result.Status);
+        Assert.Equal(ReviewStatus.Rejected, ctx.Review.Status);
+
+        var justification = ctx.Review.Verdict!.Justification;
+        Assert.NotNull(justification);
+        Assert.Contains("summary", justification);          // the AI summary
+        Assert.Contains("Hardcoded secret", justification);  // the finding title
+        Assert.Contains("src/auth.cs:42", justification);    // the finding location
+
+        // The same AI-built justification is what gets reflected on GitHub.
+        Assert.Single(ctx.Notifier.Published);
+        Assert.Equal(justification, ctx.Notifier.Published[0].Justification);
+    }
+
+    [Fact]
+    public async Task Reject_without_justification_and_without_consent_still_throws()
+    {
+        var ctx = new Harness().SeedAwaiting([
+            new Finding(Severity.Major, FindingCategory.Bug, "f.cs", 1, "t", "d")]);
+
+        await Assert.ThrowsAsync<DomainException>(
+            () => ctx.Handler().HandleAsync(
+                ctx.Review.Id, Guid.NewGuid(), VerdictDecision.Rejected, null,
+                useAiAnalysisWhenNoJustification: false));
+
+        Assert.Equal(ReviewStatus.AwaitingHumanReview, ctx.Review.Status);
         Assert.Empty(ctx.Notifier.Published);
     }
 

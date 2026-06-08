@@ -32,7 +32,9 @@ public static class VerdictEndpoints
 
         try
         {
-            var result = await handler.HandleAsync(reviewId, reviewerUserId, decision, request.Justification, cancellationToken);
+            var result = await handler.HandleAsync(
+                reviewId, reviewerUserId, decision, request.Justification,
+                request.UseAiAnalysisWhenNoJustification, cancellationToken);
 
             return result.Status == RecordVerdictStatus.Recorded
                 ? Results.Ok(new { verdictId = result.VerdictId, decision = result.Decision?.ToString() })
@@ -46,4 +48,5 @@ public static class VerdictEndpoints
     }
 }
 
-internal sealed record RecordVerdictRequest(string Decision, string? Justification);
+internal sealed record RecordVerdictRequest(
+    string Decision, string? Justification, bool UseAiAnalysisWhenNoJustification = false);

@@ -22,13 +22,24 @@ export default function ReviewDetailPage() {
 
   async function decide(decision: "Approved" | "Rejected") {
     setError(null);
+    let useAiAnalysis = false;
     if (decision === "Rejected" && !justification.trim()) {
-      setError("A justification is required to reject.");
-      return;
+      // No written justification: offer to use the AI analysis as the rejection comment.
+      const ok = window.confirm(
+        "You didn't write a justification. If you proceed, the AI summary and findings " +
+          "will be posted as the rejection comment on the PR. Continue?",
+      );
+      if (!ok) return;
+      useAiAnalysis = true;
     }
     setSubmitting(true);
     try {
-      await api.recordVerdict(params.id, decision, decision === "Rejected" ? justification.trim() : null);
+      await api.recordVerdict(
+        params.id,
+        decision,
+        decision === "Rejected" && justification.trim() ? justification.trim() : null,
+        useAiAnalysis,
+      );
       router.push("/reviews");
     } catch (e) {
       setError(e instanceof ApiError ? `${e.status}: ${e.message}` : String(e));

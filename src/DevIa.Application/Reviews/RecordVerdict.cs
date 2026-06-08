@@ -31,11 +31,23 @@ public sealed class RecordVerdict(
 {
     public async Task<RecordVerdictResult> HandleAsync(
         Guid reviewId, Guid reviewerUserId, VerdictDecision decision, string? justification,
+        bool useAiAnalysisWhenNoJustification = false,
         CancellationToken cancellationToken = default)
     {
         var review = await reviews.GetByIdAsync(reviewId, cancellationToken);
         if (review is null)
             return new RecordVerdictResult(RecordVerdictStatus.ReviewNotFound);
+
+        // When rejecting without a written justification, the reviewer can consent to use the
+        // AI analysis (summary + findings) as the rationale. It is persisted as the justification
+        // and therefore also becomes the GitHub PR comment, satisfying the domain rule that a
+        // rejection always carries one.
+        if (decision == VerdictDecision.Rejected
+            && string.IsNullOrWhiteSpace(justification)
+            && useAiAnalysisWhenNoJustification)
+        {
+            justification = AiAnalysisJustification.Build(review);
+        }
 
         // Enforces the SPEC-0003 rules; throws DomainException on violation.
         var verdict = review.RecordVerdict(reviewerUserId, decision, justification);
