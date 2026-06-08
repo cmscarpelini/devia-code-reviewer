@@ -32,6 +32,16 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
 
+  if (response.status === 401) {
+    // Access token missing/expired: drop it and send the user back to login
+    // instead of surfacing a raw error on the page.
+    clearToken();
+    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+    throw new ApiError(401, "Session expired. Please sign in again.");
+  }
+
   if (!response.ok) {
     throw new ApiError(response.status, await response.text());
   }
