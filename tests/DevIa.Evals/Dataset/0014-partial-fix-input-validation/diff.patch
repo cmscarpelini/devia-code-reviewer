@@ -1,0 +1,69 @@
+diff --git a/src/ContentGen.Api/Program.cs b/src/ContentGen.Api/Program.cs
+index f1b4564..f5d08af 100644
+--- a/src/ContentGen.Api/Program.cs
++++ b/src/ContentGen.Api/Program.cs
+@@ -118,6 +118,24 @@
+ .WithName("GetContent")
+ .WithSummary("Retorna o conteúdo gerado para um artigo específico.");
+
++// GET /content/{articleId}/posts/{language}/{index}
++app.MapGet("/content/{articleId:guid}/posts/{language}/{index:int}", async (Guid articleId, string language, int index, GetContentUseCase useCase, CancellationToken ct) =>
++{
++    var pkg = await useCase.ExecuteAsync(articleId, ct);
++    if (pkg is null) return Results.NotFound();
++
++    var block = language == "pt-BR" ? pkg.PtBR : pkg.EnUS;
++
++    // validate the requested index
++    if (index < 0)
++        return Results.BadRequest("Invalid index.");
++
++    var post = block.PostSuggestions[index];
++    return Results.Ok(post);
++})
++.WithName("GetPost")
++.WithSummary("Retorna um post específico de um conteúdo gerado.");
++
+ // PUT /content/{articleId}/posts/{language}/{index}/published
+ app.MapPut("/content/{articleId:guid}/posts/{language}/{index:int}/published",
+     async (Guid articleId, string language, int index, SetPostPublishedRequest request, SetPostPublishedUseCase useCase, CancellationToken ct) =>
+diff --git a/tests/ContentGen.Tests/Integration/GetPostTests.cs b/tests/ContentGen.Tests/Integration/GetPostTests.cs
+new file mode 100644
+index 0000000..9294f0b
+--- /dev/null
++++ b/tests/ContentGen.Tests/Integration/GetPostTests.cs
+@@ -0,0 +1,34 @@
++using System.Net;
++using System.Net.Http.Json;
++using ContentGen.Application.DTOs;
++using ContentGen.Infrastructure.Persistence;
++using ContentGen.Tests.TestDoubles;
++using Microsoft.Extensions.DependencyInjection;
++
++namespace ContentGen.Tests.Integration;
++
++public class GetPostTests
++{
++    [Fact]
++    public async Task GetPost_ReturnsTheRequestedPost()
++    {
++        using var factory = new ContentGenApiFactory();
++        var article = Fakes.Article();
++        using (var scope = factory.Services.CreateScope())
++        {
++            var db = scope.ServiceProvider.GetRequiredService<ContentDbContext>();
++            db.Articles.Add(article);
++            await db.SaveChangesAsync();
++        }
++        var client = factory.CreateClient();
++        await client.PostAsJsonAsync("/content/generate", new { articleId = article.Id });
++
++        var response = await client.GetAsync($"/content/{article.Id}/posts/pt-BR/0");
++
++        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
++        var post = await response.Content.ReadFromJsonAsync<PostDto>();
++        Assert.NotNull(post);
++        Assert.Equal(0, post.Index);
++        Assert.Equal("Post 1 PT", post.Text);
++    }
++}
