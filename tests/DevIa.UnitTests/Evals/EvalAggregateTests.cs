@@ -40,7 +40,7 @@ public class EvalAggregateTests
 
     private static EvalReport Run(double recall, CaseReport[] cases, double? judge) =>
         new(DateTimeOffset.UtcNow, "GitHubModels", "m",
-            new EvalMetrics(0, 0, 0, recall, 1, 1, 0, 1, 1, cases.Length),
+            new EvalMetrics(0, 0, 0, recall, 1, 1, 0, 1, 1, 1, cases.Length),
             judge, cases);
 
     private static CaseReport Case(string id, bool clean, int tp, int fp, int fn) =>

@@ -45,13 +45,25 @@ public class EvalScoringTests
     }
 
     [Fact]
-    public void Category_mismatch_is_not_a_match()
+    public void Category_mismatch_still_matches_on_location()
     {
+        // Style-agnostic: a correct find at the right place is a TP even if the model classified it
+        // differently (Style vs Bug). Category correctness is measured separately, not in the match.
         var result = FindingMatcher.Match(
             [Finding("src/A.cs", 42, FindingCategory.Style)],
             [Defect("src/A.cs", 42, category: "Bug")]);
 
-        Assert.Empty(result.Matched);
+        Assert.Single(result.Matched);
+        Assert.Empty(result.FalsePositives);
+    }
+
+    [Fact]
+    public void File_basename_matches_across_path_prefix()
+    {
+        // Models differ on how much of the path they include; "RingBuffer.cs" must match "src/RingBuffer.cs".
+        var result = FindingMatcher.Match([Finding("RingBuffer.cs", 9)], [Defect("src/RingBuffer.cs", 9)]);
+
+        Assert.Single(result.Matched);
     }
 
     [Fact]
@@ -143,6 +155,22 @@ public class EvalScoringTests
         var metrics = EvalMetrics.From([new CaseOutcome("c", false, match)]);
 
         Assert.Equal(0.5, metrics.SeverityAccuracy, 3); // 1 of 2 correct
+    }
+
+    [Fact]
+    public void Category_accuracy_counts_correct_category_among_matched()
+    {
+        var match = new MatchResult(
+            Matched:
+            [
+                new FindingPair(Finding("a", 1, category: FindingCategory.Bug), Defect("a", 1, category: "Bug")),
+                new FindingPair(Finding("b", 1, category: FindingCategory.Style), Defect("b", 1, category: "Bug"))
+            ],
+            FalsePositives: [], FalseNegatives: []);
+
+        var metrics = EvalMetrics.From([new CaseOutcome("c", false, match)]);
+
+        Assert.Equal(0.5, metrics.CategoryAccuracy, 3); // 1 of 2 correctly classified
     }
 
     [Fact]

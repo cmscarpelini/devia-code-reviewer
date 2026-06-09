@@ -31,6 +31,7 @@ public sealed record AggregateReport(
     MetricSummary F1,
     MetricSummary FalsePositiveRate,
     MetricSummary SeverityAccuracy,
+    MetricSummary CategoryAccuracy,
     MetricSummary? Judge,
     IReadOnlyList<CaseStability> Cases)
 {
@@ -58,6 +59,7 @@ public sealed record AggregateReport(
             MetricSummary.From(runs.Select(r => r.Metrics.F1).ToList()),
             MetricSummary.From(runs.Select(r => r.Metrics.FalsePositiveRate).ToList()),
             MetricSummary.From(runs.Select(r => r.Metrics.SeverityAccuracy).ToList()),
+            MetricSummary.From(runs.Select(r => r.Metrics.CategoryAccuracy).ToList()),
             judgeValues.Count == 0 ? null : MetricSummary.From(judgeValues),
             cases);
     }

@@ -16,6 +16,7 @@ public sealed record EvalMetrics(
     double F1,
     double FalsePositiveRate,
     double SeverityAccuracy,
+    double CategoryAccuracy,
     int CleanCases,
     int TotalCases)
 {
@@ -39,8 +40,14 @@ public sealed record EvalMetrics(
             string.Equals(p.Reported.Severity.ToString(), p.Expected.Severity, StringComparison.OrdinalIgnoreCase));
         var severityAccuracy = Ratio(correctSeverity, allMatched.Count);
 
+        // Category is no longer a match criterion, so measure how often a matched finding also got
+        // the classification right — the signal we used to (over-strictly) enforce in the match.
+        var correctCategory = allMatched.Count(p =>
+            string.Equals(p.Reported.Category.ToString(), p.Expected.Category, StringComparison.OrdinalIgnoreCase));
+        var categoryAccuracy = Ratio(correctCategory, allMatched.Count);
+
         return new EvalMetrics(
-            tp, fp, fn, recall, precision, f1, fpRate, severityAccuracy, cleanCases, outcomes.Count);
+            tp, fp, fn, recall, precision, f1, fpRate, severityAccuracy, categoryAccuracy, cleanCases, outcomes.Count);
     }
 
     private static double Ratio(int numerator, int denominator) =>

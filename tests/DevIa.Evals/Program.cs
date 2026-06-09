@@ -144,7 +144,7 @@ static void PrintReport(EvalReport report)
     }
     Console.WriteLine(new string('-', 60));
     Console.WriteLine($"Recall {m.Recall:P1}  Precision {m.Precision:P1}  F1 {m.F1:P1}");
-    Console.WriteLine($"FP rate {m.FalsePositiveRate:0.00}/clean-PR  Severity acc {m.SeverityAccuracy:P1}");
+    Console.WriteLine($"FP rate {m.FalsePositiveRate:0.00}/clean-PR  Severity acc {m.SeverityAccuracy:P1}  Category acc {m.CategoryAccuracy:P1}");
     Console.WriteLine($"TP {m.TruePositives}  FP {m.FalsePositives}  FN {m.FalseNegatives}  (clean cases: {m.CleanCases}/{m.TotalCases})");
     if (report.AverageJudgeScore is { } avg)
         Console.WriteLine($"Avg summary judge score: {avg:0.0}/5");
@@ -166,6 +166,7 @@ static void PrintAggregate(AggregateReport a)
     Console.WriteLine($"Precision {Fmt(a.Precision)}");
     Console.WriteLine($"F1        {Fmt(a.F1)}");
     Console.WriteLine($"Severity  {Fmt(a.SeverityAccuracy)}");
+    Console.WriteLine($"Category  {Fmt(a.CategoryAccuracy)}");
     Console.WriteLine($"FP rate   {a.FalsePositiveRate.Mean:0.00} ± {a.FalsePositiveRate.StdDev:0.00} /clean-PR");
     if (a.Judge is { } judge)
         Console.WriteLine($"Judge     {judge.Mean:0.0} ± {judge.StdDev:0.0} /5");

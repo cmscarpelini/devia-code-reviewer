@@ -16,8 +16,12 @@ public sealed record MatchResult(
     IReadOnlyList<ExpectedDefect> FalseNegatives);
 
 /// <summary>
-/// Links reported findings to ground-truth defects by <b>same file + nearby line + compatible
-/// category</b> (ADR-0005). Greedy: each defect claims the closest still-unmatched finding.
+/// Links reported findings to ground-truth defects by <b>same file + nearby line</b> (ADR-0005).
+/// Greedy: each defect claims the closest still-unmatched finding. Matching is style-agnostic so
+/// the harness is fair across models: file paths are compared by basename (models differ on how
+/// much of the path they include) and category is NOT a match criterion (models disagree on
+/// classification, e.g. Bug vs Style for the same issue) — category correctness is measured
+/// separately as an accuracy metric, not as a reason to reject a real match.
 /// </summary>
 public static class FindingMatcher
 {
@@ -65,9 +69,6 @@ public static class FindingMatcher
         if (!SameFile(finding.FilePath, defect.File))
             return false;
 
-        if (!string.Equals(finding.Category.ToString(), defect.Category, StringComparison.OrdinalIgnoreCase))
-            return false;
-
         if (defect.Line is { } expectedLine)
         {
             // A line-specific defect needs a line-located finding within tolerance.
@@ -81,8 +82,22 @@ public static class FindingMatcher
         return true;
     }
 
-    private static bool SameFile(string a, string b) =>
-        string.Equals(Normalize(a), Normalize(b), StringComparison.OrdinalIgnoreCase);
+    // Equal when normalized, or when the basenames match — so "src/A.cs" (one model) and "A.cs"
+    // (another) are the same file. Same-basename collisions across directories are a non-issue for
+    // the small, focused golden-dataset cases.
+    private static bool SameFile(string a, string b)
+    {
+        var na = Normalize(a);
+        var nb = Normalize(b);
+        return string.Equals(na, nb, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(Basename(na), Basename(nb), StringComparison.OrdinalIgnoreCase);
+    }
 
     private static string Normalize(string path) => path.Trim().Replace('\\', '/');
+
+    private static string Basename(string path)
+    {
+        var slash = path.LastIndexOf('/');
+        return slash >= 0 ? path[(slash + 1)..] : path;
+    }
 }
